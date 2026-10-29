@@ -997,6 +997,10 @@ export class Game {
     if (this.boss.visual.visible) this.boss.syncVisual(this.state === 'playing' ? alpha : 1);
 
     // camera
+    // Mouse look: pointer-lock deltas accumulate per event and are consumed once per render
+    // frame, so turning is smooth and frame-rate independent without touching the simulation.
+    const look = this.input.takeLook();
+    if (look.dx !== 0 || look.dy !== 0) this.cam.addLook(look.dx, look.dy);
     const pp = this.player.renderPos;
     let lock: LockInfo | null = null;
     if (this.lockTarget && this.lockTarget.alive) {

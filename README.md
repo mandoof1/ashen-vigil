@@ -218,7 +218,7 @@ chamber and asserts it arrives without getting stuck.
 npm run typecheck      # tsc --noEmit, strict
 npm test               # vitest: 59 unit tests over the pure core
 npm run build          # typecheck + vite build
-npm run test:smoke     # Playwright against dist/: 67 checks
+npm run test:smoke     # Playwright against dist/: 68 checks
 ```
 
 Unit tests cover the parts that are pure logic: stamina accounting, damage/guard/poise
@@ -226,13 +226,13 @@ resolution, the hit registry (one hit per swing, re-arm on a new swing), ember d
 rules, progression costs and clamps, and save validation/migration.
 
 The smoke test boots the **production build** in headless Chromium and drives it through:
-boot, new game, navigation, traversal, movement, collision, combat (light/heavy/guard/guard
-break/dodge/heal/enemy aggression), death and ember recovery, checkpoints, upgrades, the
+boot, new game, navigation, traversal, movement, camera-relative controls, mouse look, collision,
+combat (light/heavy/guard/guard break/dodge/heal/enemy aggression), death and ember recovery, checkpoints, upgrades, the
 shortcut gate, the full boss fight (both phases, telegraphs, barrier, reward), the bell and
 the ending, save/reload/continue, save edge cases, all four quality presets, the pause /
 controls / settings overlays, and console cleanliness.
 
-Latest run: **67/67 checks passed**, 59/59 unit tests, no uncaught runtime errors.
+Latest run: **68/68 checks passed**, 59/59 unit tests, no uncaught runtime errors.
 Full transcript: `reports/smoke.md` (machine-readable: `reports/smoke.json`).
 
 ### How the end-to-end checks stay honest
@@ -245,6 +245,10 @@ same physics, same animation timing, same hit resolution, no dependence on how f
 renders. Where a check needs a fixed geometry ("my sword connects"), the guardian is pinned
 and the player is placed by hand; where a check needs the world to behave (the traversal run,
 the boss fight), nothing is pinned and the actor walks under its own AI and physics.
+
+Headless Chromium reports `movementX = 0` for real pointer-lock moves, so the mouse-look check
+feeds a synthetic pointer-lock `mousemove` through the real document listener and lets live
+render frames consume it. Without that check the look path can go dead silently.
 
 Two test-only switches exist so that incidental events cannot decide a result:
 `Game.testDisableVoidDeath` (a scripted exchange that walks off an edge is not a death) and

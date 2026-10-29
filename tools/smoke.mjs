@@ -183,6 +183,25 @@ async function main() {
   check('one and a half seconds of simulation moves the player at run speed', sim.d1 > 4.0 && sim.d1 < 9.0, `moved ${sim.d1.toFixed(2)}m`);
   check('camera yaw steers movement (camera-relative controls)', Math.abs(sim.dx) > 4.0 && Math.abs(sim.dz) < 2.0, JSON.stringify({ dx: +sim.dx.toFixed(2), dz: +sim.dz.toFixed(2) }));
 
+  // Mouse look must reach the camera rig. Scripted-key checks cannot see this path at all, and
+  // headless Chromium reports movementX = 0 for real pointer-lock moves, so the check feeds a
+  // synthetic pointer-lock event through the real document listener and lets live frames apply it.
+  const lookBefore = await call(() => {
+    const g = window.ASHEN.game;
+    g.cam.pitch = 0.1;
+    return { yaw: g.cam.yaw, pitch: g.cam.pitch, locked: g.input.pointerLocked };
+  });
+  await page.evaluate(() => {
+    document.dispatchEvent(new MouseEvent('mousemove', { movementX: 240, movementY: 120 }));
+  });
+  await sleep(2500);   // let a few live render frames consume the deltas
+  const look = await call(() => {
+    const g = window.ASHEN.game;
+    return { yaw: g.cam.yaw, pitch: g.cam.pitch, residual: g.input.mouseDX, residualY: g.input.mouseDY };
+  });
+  const dYaw = look.yaw - lookBefore.yaw, dPitch = look.pitch - lookBefore.pitch;
+  check('mouse look turns the camera', Math.abs(dYaw) > 0.3 && Math.abs(dPitch) > 0.1 && look.residual === 0 && look.residualY === 0, JSON.stringify({ dYaw: +dYaw.toFixed(3), dPitch: +dPitch.toFixed(3), residual: [look.residual, look.residualY] }));
+
   // ------------------------------------------------------------- collision
   const wall = await call(async () => {
     const g = window.ASHEN.game;

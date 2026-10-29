@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-29T06:20:00.335Z",
+  "generatedAt": "2026-10-29T13:46:34.888Z",
   "browser": "156.0.8078.4",
   "target": "http://127.0.0.1:4173/",
   "failures": 0,
@@ -12,7 +12,7 @@
     {
       "name": "new game enters play",
       "ok": true,
-      "detail": "{\"state\":\"playing\",\"pos\":{\"x\":-0.0000033128751510957954,\"y\":3.0047950744628906,\"z\":42}}"
+      "detail": "{\"state\":\"playing\",\"pos\":{\"x\":-0.0000010338961828892934,\"y\":3.003596305847168,\"z\":42}}"
     },
     {
       "name": "navigation graph is connected across the whole map",
@@ -27,7 +27,7 @@
     {
       "name": "the player can walk the whole route from the gate to the bell-chamber landing on real physics",
       "ok": true,
-      "detail": "{\"reached\":5,\"waypoints\":5,\"steps\":1367,\"stuck\":0,\"falls\":0,\"alive\":true,\"x\":0,\"y\":4.6,\"z\":-27.2}"
+      "detail": "{\"reached\":5,\"waypoints\":5,\"steps\":1154,\"stuck\":0,\"falls\":0,\"alive\":true,\"x\":0,\"y\":4.6,\"z\":-27.2}"
     },
     {
       "name": "rapier physics is loaded",
@@ -57,32 +57,37 @@
     {
       "name": "one and a half seconds of simulation moves the player at run speed",
       "ok": true,
-      "detail": "moved 4.72m"
+      "detail": "moved 4.96m"
     },
     {
       "name": "camera yaw steers movement (camera-relative controls)",
       "ok": true,
-      "detail": "{\"dx\":-5.19,\"dz\":0.3}"
+      "detail": "{\"dx\":-5.91,\"dz\":0.52}"
+    },
+    {
+      "name": "mouse look turns the camera",
+      "ok": true,
+      "detail": "{\"dYaw\":-0.528,\"dPitch\":-0.264,\"residual\":[0,0]}"
     },
     {
       "name": "walls stop the player without tunnelling",
       "ok": true,
-      "detail": "{\"x\":-10.619978904724121,\"minX\":-10.62030029296875,\"minY\":3.0133070945739746,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
+      "detail": "{\"x\":-10.61989974975586,\"minX\":-10.6202974319458,\"minY\":3.019782781600952,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
     },
     {
       "name": "the player capsule never overlaps solid geometry",
       "ok": true,
-      "detail": "{\"x\":-10.619978904724121,\"minX\":-10.62030029296875,\"minY\":3.0133070945739746,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
+      "detail": "{\"x\":-10.61989974975586,\"minX\":-10.6202974319458,\"minY\":3.019782781600952,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
     },
     {
       "name": "snap-to-ground keeps the player grounded on flat floor",
       "ok": true,
-      "detail": "{\"x\":-10.619978904724121,\"minX\":-10.62030029296875,\"minY\":3.0133070945739746,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
+      "detail": "{\"x\":-10.61989974975586,\"minX\":-10.6202974319458,\"minY\":3.019782781600952,\"insideSolid\":false,\"grounded\":true,\"fell\":false}"
     },
     {
       "name": "light attacks damage an enemy",
       "ok": true,
-      "detail": "74 -> 0 minBlade=0.98 [{\"i\":31,\"at\":0.27,\"m\":0.98,\"d\":0.74,\"blocked\":false,\"hp\":38,\"st\":\"attackActive\"}]"
+      "detail": "74 -> 0 minBlade=1.02 [{\"i\":255,\"at\":0.27,\"m\":1.02,\"d\":0.74,\"blocked\":false,\"hp\":0,\"st\":\"attackActive\"}]"
     },
     {
       "name": "attacking costs stamina",
@@ -127,7 +132,7 @@
     {
       "name": "enemies attack and damage the player",
       "ok": true,
-      "detail": "minBlade=0.46 [{\"i\":1440,\"m\":0.46,\"at\":0.6,\"st\":\"attackActive\",\"tipRel\":[\"0.04\",\"1.63\",\"-0.86\"],\"pRel\":[\"-0.18\",\"0.40\",\"-1.08\"]}]"
+      "detail": "minBlade=0.49 [{\"i\":1174,\"m\":0.49,\"at\":0.6,\"st\":\"attackActive\",\"tipRel\":[\"0.42\",\"1.63\",\"-0.75\"],\"pRel\":[\"0.32\",\"0.36\",\"-1.05\"]}]"
     },
     {
       "name": "death switches to the death state",
@@ -137,7 +142,7 @@
     {
       "name": "death drops the embers at the death point",
       "ok": true,
-      "detail": "{\"drop\":{\"embers\":250,\"x\":-14.000000953674316,\"y\":0.019996201619505882,\"z\":-12,\"collected\":false},\"pos\":{\"x\":-14.000000953674316,\"y\":0.019996343180537224,\"z\":-12}}"
+      "detail": "{\"drop\":{\"embers\":250,\"x\":-14.000000953674316,\"y\":0.020095892250537872,\"z\":-12,\"collected\":false},\"pos\":{\"x\":-14.000000953674316,\"y\":0.01999628357589245,\"z\":-12}}"
     },
     {
       "name": "death zeroes the carried embers",
@@ -157,7 +162,7 @@
     {
       "name": "respawn restores full health at the last checkpoint",
       "ok": true,
-      "detail": "{\"hp\":120,\"pos\":{\"x\":-0.000006429365384974517,\"y\":3.0059938430786133,\"z\":42},\"state\":\"playing\"}"
+      "detail": "{\"hp\":120,\"pos\":{\"x\":0.000005377722118282691,\"y\":3.005793571472168,\"z\":42.000003814697266},\"state\":\"playing\"}"
     },
     {
       "name": "respawn restores defeated enemies",
@@ -167,7 +172,7 @@
     {
       "name": "embers still wait at the drop site after respawn",
       "ok": true,
-      "detail": "{\"embers\":0,\"drop\":{\"embers\":250,\"x\":-14.000000953674316,\"y\":0.019996201619505882,\"z\":-12,\"collected\":false},\"visible\":true}"
+      "detail": "{\"embers\":0,\"drop\":{\"embers\":250,\"x\":-14.000000953674316,\"y\":0.020095892250537872,\"z\":-12,\"collected\":false},\"visible\":true}"
     },
     {
       "name": "walking over the drop recovers the embers",
@@ -197,12 +202,12 @@
     {
       "name": "the shortcut gate opens and is recorded",
       "ok": true,
-      "detail": "{\"opened\":true,\"x\":-13.229188919067383,\"saved\":true}"
+      "detail": "{\"opened\":true,\"x\":-11.831422805786133,\"saved\":true}"
     },
     {
       "name": "the gate collider is removed so the corridor is walkable",
       "ok": true,
-      "detail": "{\"opened\":true,\"x\":-13.229188919067383,\"saved\":true}"
+      "detail": "{\"opened\":true,\"x\":-11.831422805786133,\"saved\":true}"
     },
     {
       "name": "boss fight starts on approach",
@@ -242,12 +247,12 @@
     {
       "name": "boss can be defeated and the kill is recorded",
       "ok": true,
-      "detail": "{\"defeated\":true,\"saved\":true,\"barrier\":false,\"reward\":965}"
+      "detail": "{\"defeated\":true,\"saved\":true,\"barrier\":false,\"reward\":910}"
     },
     {
       "name": "arena barrier is removed after the fight",
       "ok": true,
-      "detail": "{\"defeated\":true,\"saved\":true,\"barrier\":false,\"reward\":965}"
+      "detail": "{\"defeated\":true,\"saved\":true,\"barrier\":false,\"reward\":910}"
     },
     {
       "name": "the bell interaction is offered after the boss falls",
@@ -267,7 +272,7 @@
     {
       "name": "save is written to localStorage with a version tag",
       "ok": true,
-      "detail": "{\"version\":3,\"createdAt\":1793254691126,\"updatedAt\":1793254726078,\"checkpointId\":\"cp_approa"
+      "detail": "{\"version\":3,\"createdAt\":1793281486635,\"updatedAt\":1793281527172,\"checkpointId\":\"cp_approa"
     },
     {
       "name": "save reloads and validates against the current schema",
@@ -302,7 +307,7 @@
     {
       "name": "all four quality presets render (headless SwiftShader is software-rendered)",
       "ok": true,
-      "detail": "[[\"low\",1,481],[\"medium\",1,497],[\"high\",3,534],[\"ultra\",1,550]]"
+      "detail": "[[\"low\",1,481],[\"medium\",1,496],[\"high\",2,498],[\"ultra\",1,536]]"
     },
     {
       "name": "render target follows the preset (low < ultra)",
@@ -343,7 +348,7 @@
   "perf": [
     {
       "preset": "low",
-      "fps": 0.8723872003352235,
+      "fps": 0.8895807850550428,
       "drawCalls": 481,
       "triangles": 44160,
       "render": [
@@ -354,9 +359,9 @@
     },
     {
       "preset": "medium",
-      "fps": 1.4305810543402702,
-      "drawCalls": 497,
-      "triangles": 44187,
+      "fps": 0.5538427455830851,
+      "drawCalls": 496,
+      "triangles": 44175,
       "render": [
         1088,
         612
@@ -365,9 +370,9 @@
     },
     {
       "preset": "high",
-      "fps": 2.5848527628076363,
-      "drawCalls": 534,
-      "triangles": 44989,
+      "fps": 1.951647922714698,
+      "drawCalls": 498,
+      "triangles": 44177,
       "render": [
         1280,
         720
@@ -376,9 +381,9 @@
     },
     {
       "preset": "ultra",
-      "fps": 1.1932224962200477,
-      "drawCalls": 550,
-      "triangles": 45293,
+      "fps": 1.1882694044393614,
+      "drawCalls": 536,
+      "triangles": 45033,
       "render": [
         1280,
         720
