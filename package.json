@@ -1,0 +1,33 @@
+{
+  "name": "ashen-vigil",
+  "private": true,
+  "version": "1.0.0",
+  "description": "ASHEN VIGIL: THE LAST BELL - a browser soulslike built with TypeScript, three.js and Rapier",
+  "type": "module",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:smoke": "node tools/smoke.mjs",
+    "report": "node tools/report.mjs",
+    "shots": "node tools/shots.mjs",
+    "package": "node tools/package.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "0.21.0",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.1",
+    "@types/three": "0.186.0",
+    "playwright": "1.64.1",
+    "typescript": "5.9.3",
+    "vite": "7.3.0",
+    "vitest": "3.2.4"
+  }
+}

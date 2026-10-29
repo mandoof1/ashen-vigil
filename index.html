@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="description" content="Ashen Vigil: The Last Bell — a third-person soulslike action game that runs in your browser." />
+<meta name="color-scheme" content="dark" />
+<title>Ashen Vigil: The Last Bell</title>
+</head>
+<body>
+<div id="app">
+  <canvas id="game" aria-label="Ashen Vigil game viewport"></canvas>
+
+  <!-- ============ HUD ============ -->
+  <div id="hud" class="layer hidden" aria-hidden="true">
+    <div id="vitals">
+      <div class="bar-stack">
+        <div class="bar bar-hp" role="progressbar" aria-label="Health" aria-valuemin="0" aria-valuemax="100">
+          <div class="bar-fill" id="hp-fill"></div>
+          <div class="bar-ghost" id="hp-ghost"></div>
+          <span class="bar-text" id="hp-text">120 / 120</span>
+        </div>
+        <div class="bar bar-st" role="progressbar" aria-label="Stamina" aria-valuemin="0" aria-valuemax="100">
+          <div class="bar-fill" id="st-fill"></div>
+          <span class="bar-text" id="st-text">100 / 100</span>
+        </div>
+      </div>
+      <div id="flasks" aria-label="Healing charges"><span class="flask-label">Emberflask</span><div id="flask-pips"></div></div>
+    </div>
+
+    <div id="ember-readout" class="readout">
+      <span class="ember-glyph" aria-hidden="true"></span>
+      <span id="ember-count">0</span>
+      <span class="readout-sub" id="ember-lost"></span>
+    </div>
+
+    <div id="lockon-reticle" class="hidden" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="46" height="46"><circle cx="20" cy="20" r="13" /><circle cx="20" cy="20" r="2.5" /></svg>
+    </div>
+
+    <div id="enemy-health" class="hidden">
+      <div class="enemy-name" id="enemy-name">Hollow Sentry</div>
+      <div class="enemy-bar"><div class="enemy-fill" id="enemy-fill"></div></div>
+    </div>
+
+    <div id="boss-frame" class="hidden">
+      <div class="boss-name" id="boss-name">The Bellbound Warden</div>
+      <div class="boss-bar"><div class="boss-fill" id="boss-fill"></div><div class="boss-phase" id="boss-phase"></div></div>
+    </div>
+
+    <div id="interact-prompt" class="hidden"><span class="key">E</span><span id="interact-text">Interact</span></div>
+    <div id="toast-stack" aria-live="polite"></div>
+    <div id="lore-card" class="hidden"><div id="lore-title"></div><div id="lore-body"></div></div>
+    <div id="combat-log" aria-live="polite"></div>
+  </div>
+
+  <!-- ============ contextual tutorial ============ -->
+  <div id="tutorial" class="layer hidden" aria-live="polite">
+    <div id="tutorial-card"><span id="tutorial-key"></span><span id="tutorial-text"></span></div>
+  </div>
+
+  <!-- ============ death / victory ============ -->
+  <div id="death-screen" class="screen-layer hidden">
+    <div class="death-word">YOU WERE UNMADE</div>
+    <div class="death-sub" id="death-sub">Your embers wait where you fell.</div>
+    <button class="btn" id="btn-respawn" data-autofocus>Return to the Vigil Flame</button>
+  </div>
+
+  <div id="victory-screen" class="screen-layer hidden">
+    <div class="victory-word">THE LAST BELL</div>
+    <div class="victory-lines" id="victory-lines"></div>
+    <div class="credits" id="credits"></div>
+    <div class="victory-actions">
+      <button class="btn" id="btn-victory-continue" data-autofocus>Walk the sanctuary again</button>
+      <button class="btn ghost" id="btn-victory-menu">Return to title</button>
+    </div>
+  </div>
+
+  <!-- ============ menus ============ -->
+  <div id="menu-main" class="screen-layer">
+    <div class="title-block">
+      <div class="title-crest" aria-hidden="true"></div>
+      <h1 class="game-title">ASHEN VIGIL</h1>
+      <div class="game-sub">THE LAST BELL</div>
+    </div>
+    <div class="menu-buttons">
+      <button class="btn" id="btn-continue" data-autofocus>Continue</button>
+      <button class="btn" id="btn-new">New Vigil</button>
+      <button class="btn ghost" id="btn-controls-main">Controls</button>
+      <button class="btn ghost" id="btn-settings-main">Settings</button>
+    </div>
+    <div class="title-foot">
+      <span id="save-note"></span>
+      <span class="hint">Single-player. Your save lives in this browser only.</span>
+    </div>
+  </div>
+
+  <div id="menu-pause" class="screen-layer hidden">
+    <div class="panel">
+      <h2>Vigil Paused</h2>
+      <div class="menu-buttons">
+        <button class="btn" id="btn-resume" data-autofocus>Resume</button>
+        <button class="btn ghost" id="btn-settings-pause">Settings</button>
+        <button class="btn ghost" id="btn-controls-pause">Controls</button>
+        <button class="btn ghost" id="btn-quit">Abandon to title</button>
+      </div>
+      <div class="panel-foot">Pointer lock is released while paused. Click Resume to capture the mouse again.</div>
+    </div>
+  </div>
+
+  <div id="panel-settings" class="screen-layer hidden">
+    <div class="panel wide">
+      <h2>Settings</h2>
+      <div class="settings-grid">
+        <fieldset>
+          <legend>Display</legend>
+          <label class="row"><span>Quality preset</span>
+            <select id="set-preset"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="ultra">Ultra</option><option value="custom">Custom</option></select></label>
+          <label class="row"><span>Render scale <em id="set-scale-val">100%</em></span>
+            <input type="range" id="set-scale" min="50" max="100" step="5" /></label>
+          <label class="row"><span>Shadows</span>
+            <select id="set-shadows"><option value="off">Off</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></label>
+          <label class="row"><span>Bloom</span><input type="checkbox" id="set-bloom" /></label>
+          <label class="row"><span>Anti-aliasing</span>
+            <select id="set-aa"><option value="smaa">SMAA (post)</option><option value="fxaa">FXAA (post)</option><option value="msaa">MSAA (direct)</option><option value="none">None</option></select></label>
+          <label class="row"><span>Adaptive resolution</span><input type="checkbox" id="set-adaptive" /></label>
+          <label class="row"><span>Performance overlay</span><input type="checkbox" id="set-perf" /></label>
+          <label class="row"><span>Fullscreen</span><button class="btn tiny" id="set-fullscreen">Enter fullscreen</button></label>
+          <div class="row static"><span>Internal render size</span><em id="set-render-size">—</em></div>
+        </fieldset>
+        <fieldset>
+          <legend>Camera &amp; input</legend>
+          <label class="row"><span>Mouse sensitivity <em id="set-sens-val">1.00</em></span>
+            <input type="range" id="set-sens" min="0.2" max="3" step="0.05" /></label>
+          <label class="row"><span>Invert vertical look</span><input type="checkbox" id="set-invert" /></label>
+          <label class="row"><span>Camera shake <em id="set-shake-val">60%</em></span>
+            <input type="range" id="set-shake" min="0" max="100" step="5" /></label>
+          <label class="row"><span>Reduced motion</span><input type="checkbox" id="set-reduced" /></label>
+          <label class="row"><span>Show damage numbers</span><input type="checkbox" id="set-dmg" /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Audio</legend>
+          <label class="row"><span>Master <em id="set-vol-val">70%</em></span><input type="range" id="set-vol" min="0" max="100" step="5" /></label>
+          <label class="row"><span>Effects <em id="set-sfx-val">80%</em></span><input type="range" id="set-sfx" min="0" max="100" step="5" /></label>
+          <label class="row"><span>Ambience <em id="set-amb-val">70%</em></span><input type="range" id="set-amb" min="0" max="100" step="5" /></label>
+          <label class="row"><span>Mute all</span><input type="checkbox" id="set-mute" /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Saves</legend>
+          <div class="row static"><span>Save slot</span><em id="set-save-state">none</em></div>
+          <label class="row"><span>Export save</span><button class="btn tiny" id="set-export">Copy JSON</button></label>
+          <label class="row"><span>Import save</span><input type="file" id="set-import" accept="application/json" /></label>
+          <div class="row static note">Browser saves are per browser and per site origin. Export a copy if you switch machines.</div>
+        </fieldset>
+      </div>
+      <div class="menu-buttons right"><button class="btn" id="btn-settings-close" data-autofocus>Close</button></div>
+    </div>
+  </div>
+
+  <div id="panel-controls" class="screen-layer hidden">
+    <div class="panel wide">
+      <h2>Controls</h2>
+      <div class="controls-grid" id="controls-list"></div>
+      <div class="panel-foot">
+        The mouse is captured with Pointer Lock after you start the game. Press <b>Escape</b> at any time to release it and open the pause menu.
+        Combat input is ignored while any menu is open, and held keys are cleared when the window loses focus.
+      </div>
+      <div class="menu-buttons right"><button class="btn" id="btn-controls-close" data-autofocus>Close</button></div>
+    </div>
+  </div>
+
+  <div id="panel-rest" class="screen-layer hidden">
+    <div class="panel">
+      <h2>Vigil Flame</h2>
+      <div class="rest-summary" id="rest-summary"></div>
+      <div class="upgrade-list" id="upgrade-list"></div>
+      <div class="menu-buttons">
+        <button class="btn" id="btn-rest" data-autofocus>Rest (restore, respawn foes)</button>
+        <button class="btn ghost" id="btn-rest-close">Leave</button>
+      </div>
+      <div class="panel-foot" id="rest-note"></div>
+    </div>
+  </div>
+
+  <div id="panel-confirm" class="screen-layer hidden">
+    <div class="panel narrow">
+      <h2 id="confirm-title">Are you sure?</h2>
+      <div class="panel-body" id="confirm-body"></div>
+      <div class="menu-buttons">
+        <button class="btn" id="btn-confirm-yes" data-autofocus>Yes</button>
+        <button class="btn ghost" id="btn-confirm-no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ overlays ============ -->
+  <div id="perf" class="hidden"></div>
+  <div id="compat" class="screen-layer hidden">
+    <div class="panel narrow">
+      <h2>This browser cannot run Ashen Vigil</h2>
+      <div class="panel-body" id="compat-body"></div>
+    </div>
+  </div>
+  <div id="loading" class="screen-layer">
+    <div class="load-inner">
+      <div class="load-title">ASHEN VIGIL</div>
+      <div class="load-bar"><div id="load-fill"></div></div>
+      <div class="load-text" id="load-text">Kindling the forge…</div>
+    </div>
+  </div>
+  <div id="fade" class="fade"></div>
+</div>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
